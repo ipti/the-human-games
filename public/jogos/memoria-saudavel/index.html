@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Memória Saudável</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    font-family: system-ui, sans-serif; background: #2f431e; color: #fff;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 12px;
+  }
+  .placar { display: flex; gap: 20px; font-size: 1rem; }
+  .tabuleiro {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    width: min(92vw, 70vh, 460px);
+  }
+  .carta {
+    aspect-ratio: 1; border: 0; border-radius: 12px; font-size: clamp(1.6rem, 6vmin, 2.6rem);
+    background: #55a333; cursor: pointer; transition: transform 0.2s, background 0.2s;
+  }
+  .carta.virada, .carta.par { background: #fff; }
+  .carta.par { opacity: 0.55; cursor: default; }
+  .carta:not(.virada):not(.par):hover { transform: scale(1.04); }
+  .fim { display: none; text-align: center; }
+  .fim.mostrar { display: block; }
+  .fim button {
+    font: inherit; font-weight: 600; padding: 10px 20px; border: 0; border-radius: 999px;
+    background: #ec8a41; color: #fff; cursor: pointer; margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+  <div class="placar"><span>Jogadas: <b id="jogadas">0</b></span><span>Recorde: <b id="recorde">–</b></span></div>
+  <div class="tabuleiro" id="tabuleiro"></div>
+  <div class="fim" id="fim">
+    <p>Parabéns! Você terminou em <b id="final"></b> jogadas.</p>
+    <button id="denovo">Jogar de novo</button>
+  </div>
+<script>
+  const ITENS = ['🍎', '🥕', '🍌', '🥦', '🍇', '🍉', '🌽', '🍊'];
+  const tabuleiro = document.getElementById('tabuleiro');
+  const elJogadas = document.getElementById('jogadas');
+  const elRecorde = document.getElementById('recorde');
+  const fim = document.getElementById('fim');
+  let abertas = [], jogadas = 0, pares = 0, travado = false;
+
+  function lerRecorde() {
+    try { return Number(localStorage.getItem('memoria-saudavel:recorde')) || null; } catch { return null; }
+  }
+  function salvarRecorde(v) {
+    try { localStorage.setItem('memoria-saudavel:recorde', v); } catch {}
+  }
+
+  function iniciar() {
+    const cartas = [...ITENS, ...ITENS].sort(() => Math.random() - 0.5);
+    tabuleiro.innerHTML = '';
+    abertas = []; jogadas = 0; pares = 0; travado = false;
+    elJogadas.textContent = 0;
+    elRecorde.textContent = lerRecorde() ?? '–';
+    fim.classList.remove('mostrar');
+    cartas.forEach((item) => {
+      const b = document.createElement('button');
+      b.className = 'carta';
+      b.dataset.item = item;
+      b.setAttribute('aria-label', 'Carta virada');
+      b.addEventListener('click', () => virar(b));
+      tabuleiro.appendChild(b);
+    });
+  }
+
+  function virar(b) {
+    if (travado || b.classList.contains('virada') || b.classList.contains('par')) return;
+    b.classList.add('virada');
+    b.textContent = b.dataset.item;
+    abertas.push(b);
+    if (abertas.length < 2) return;
+    jogadas++;
+    elJogadas.textContent = jogadas;
+    const [a, c] = abertas;
+    if (a.dataset.item === c.dataset.item) {
+      a.classList.add('par'); c.classList.add('par');
+      abertas = [];
+      if (++pares === ITENS.length) terminar();
+    } else {
+      travado = true;
+      setTimeout(() => {
+        [a, c].forEach((x) => { x.classList.remove('virada'); x.textContent = ''; });
+        abertas = []; travado = false;
+      }, 800);
+    }
+  }
+
+  function terminar() {
+    const r = lerRecorde();
+    if (!r || jogadas < r) salvarRecorde(jogadas);
+    document.getElementById('final').textContent = jogadas;
+    elRecorde.textContent = lerRecorde();
+    fim.classList.add('mostrar');
+  }
+
+  document.getElementById('denovo').addEventListener('click', iniciar);
+  iniciar();
+</script>
+</body>
+</html>

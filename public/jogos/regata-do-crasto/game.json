@@ -1,0 +1,11 @@
+{
+  "titulo": "Regata do Crasto",
+  "descricao": "Corrida de barcos a vela no canal do mangue do rio Piauí, no Povoado do Crasto, em Santa Luzia do Itanhy (SE). Três voltas, quatro barcos e um vento que não para de mudar. Para 1 ou 2 jogadores.",
+  "categoria": "diversao",
+  "faixa_etaria": "8+",
+  "controles": ["Jogador 1: W A S D ou setas, segure Espaço para mirar", "Jogador 2: setas, segure Enter para mirar", "Esc pausa", "M liga/desliga o som", "botões de toque no celular"],
+  "autor": "Equipe THP",
+  "thumb": "thumb.jpg",
+  "entrada": "index.html",
+  "destaque": true
+}

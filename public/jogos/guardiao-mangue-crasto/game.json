@@ -1,0 +1,11 @@
+{
+  "titulo": "Guardião do Mangue do Crasto",
+  "descricao": "Explore em 3D o mangue do Crasto, às margens do rio Piauí, em Santa Luzia do Itanhy (SE). Descubra os seres que vivem ali, recolha e separe o lixo e replante o mangue com as canetas da gaitera.",
+  "categoria": "educacao-basica",
+  "faixa_etaria": "8+",
+  "controles": ["WASD anda", "arraste o mouse ou o dedo para girar a câmera", "E observa e recolhe", "R planta", "J abre o diário", "Espaço pula", "M liga/desliga o som"],
+  "autor": "Equipe THP",
+  "thumb": "thumb.jpg",
+  "entrada": "index.html",
+  "destaque": true
+}

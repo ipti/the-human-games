@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Regata do Crasto</title>
+<meta name="description" content="Corrida de barcos a vela no mangue do Povoado do Crasto, em Santa Luzia do Itanhy (SE). Para 1 ou 2 jogadores.">
+<meta property="og:title" content="Regata do Crasto">
+<meta property="og:description" content="Corrida de barcos a vela no mangue do Povoado do Crasto, em Santa Luzia do Itanhy (SE).">
+<meta name="theme-color" content="#10231c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%232f9a90'/%3E%3Cpath d='M34 10v30h16z' fill='%23f3e7cc' stroke='%2310231c' stroke-width='3'/%3E%3Cpath d='M30 16v24H16z' fill='%23d4432c' stroke='%2310231c' stroke-width='3'/%3E%3Cpath d='M8 44h48l-7 10H15z' fill='%23f2b632' stroke='%2310231c' stroke-width='3'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=Barlow+Semi+Condensed:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<canvas id="game" aria-label="Pista da Regata do Crasto"></canvas>
+<div id="loading">Preparando o mangue…</div>
+
+<div id="menu" class="screen" hidden>
+  <div class="board">
+    <header class="brand">
+      <p class="eyebrow">Festa dos Pescadores · Povoado do Crasto · Santa Luzia do Itanhy, SE</p>
+      <h1>Regata do Crasto</h1>
+      <p class="lede">Corrida de barcos a vela no canal do mangue do rio Piauí. Três voltas no sentido horário, quatro barcos na água e um vento que não para de mudar.</p>
+    </header>
+    <div class="menu-grid">
+      <section class="setup" aria-label="Escolha dos barcos">
+        <div class="mode" role="group" aria-label="Número de jogadores">
+          <button type="button" id="mode1" data-mode="1" aria-pressed="true">1 jogador</button>
+          <button type="button" id="mode2" data-mode="2" aria-pressed="false">2 jogadores</button>
+        </div>
+        <div class="pick" id="pick0">
+          <h2><span class="dot" style="background:var(--p1)"></span>Jogador 1 <small id="p1keys">W A S D ou setas · segure Espaço para mirar</small></h2>
+          <div class="cards" id="cards0"></div>
+        </div>
+        <div class="pick" id="pick1" hidden>
+          <h2><span class="dot" style="background:var(--p2)"></span>Jogador 2 <small>Setas · segure Enter para mirar</small></h2>
+          <div class="cards" id="cards1"></div>
+        </div>
+      </section>
+      <aside class="howto" aria-label="Como jogar">
+        <h2>Como correr</h2>
+        <p><b>Vento:</b> a favor o barco voa, de lado anda em velocidade média, contra fica lento. A biruta no topo da tela mostra para onde ele sopra.</p>
+        <ul class="sectors">
+          <li><span class="n" style="background:#ef8a3c">1</span><span><b>Pedras.</b> Batida tira vida e para o barco.</span></li>
+          <li><span class="n" style="background:#86cf5c">2</span><span><b>Animais e curvas.</b> Garças voando baixo e tainhas pulando. Um círculo na água avisa o salto. Tem atalho pelo mangue.</span></li>
+          <li><span class="n" style="background:#f4d548">3</span><span><b>Recuperar vida.</b> Passe pelas boias amarelas de reparo.</span></li>
+          <li><span class="n" style="background:#5fcbe8">4</span><span><b>Ondas e chegada.</b> Onda por trás empurra, onda de frente (dourada) dá bônus, onda lateral atrapalha. Atalho antes da reta final.</span></li>
+        </ul>
+        <p><b>Lixo:</b> garrafas PET e sacolas no canal tiram velocidade. Desvie.</p>
+        <p><b>Siri e ostra:</b> passe por cima para pegar. Segure a tecla de arremesso para esticar a mira e solte para jogar no barco adversário.</p>
+        <div class="keys"><span>Esc pausa · M liga/desliga o som</span></div>
+      </aside>
+    </div>
+    <div class="foot">
+      <p>Fora do canal, a água rasa com raízes de mangue deixa o barco lento. Se a vida zerar, o barco afunda e volta no início do setor.</p>
+      <button type="button" class="go" id="startBtn">Largar!</button>
+    </div>
+  </div>
+</div>
+
+<div id="hud" hidden>
+  <div id="panels" class="panels"></div>
+  <div id="windbox" aria-label="Direção do vento"><canvas id="windc" width="104" height="104"></canvas><div><b>Vento</b><span>para onde sopra</span></div></div>
+  <canvas id="mini" width="232" height="312" aria-label="Minimapa"></canvas>
+  <div class="hint">Esc pausa · M som</div>
+  <div id="countdown" hidden></div>
+</div>
+
+<div id="touch" hidden>
+  <div class="grp"><button type="button" data-t="left" aria-label="Virar à esquerda">◀</button><button type="button" data-t="right" aria-label="Virar à direita">▶</button></div>
+  <div class="grp"><button type="button" data-t="down">Freio</button><button type="button" data-t="fire" class="fire">Jogar</button><button type="button" data-t="up">Vela</button></div>
+</div>
+
+<div id="pause" class="screen" hidden>
+  <div class="board overlay-card"><div class="inner">
+    <h2>Pausado</h2>
+    <p style="margin:0">A regata espera por você.</p>
+    <div class="btns"><button type="button" class="go" id="resumeBtn">Continuar</button><button type="button" class="ghost" id="muteBtn" aria-pressed="true">Som: ligado</button><button type="button" class="ghost" id="quitBtn">Voltar ao menu</button></div>
+  </div></div>
+</div>
+
+<div id="results" class="screen" hidden>
+  <div class="board overlay-card"><div class="inner">
+    <p class="eyebrow">Resultado da regata</p>
+    <h2 id="resTitle">Chegada</h2>
+    <div class="tablewrap"><table id="resTable"></table></div>
+    <div class="btns"><button type="button" class="go" id="againBtn">Correr de novo</button><button type="button" class="ghost" id="menuBtn">Trocar barcos</button></div>
+  </div></div>
+</div>
+<script src="game.js"></script>
+</body>
+</html>

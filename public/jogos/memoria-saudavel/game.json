@@ -1,0 +1,11 @@
+{
+  "titulo": "Memória Saudável",
+  "descricao": "Encontre os pares de frutas e legumes no menor número de jogadas possível.",
+  "categoria": "saude",
+  "faixa_etaria": "5+",
+  "controles": ["toque", "mouse"],
+  "autor": "Equipe THP",
+  "thumb": "thumb.jpg",
+  "entrada": "index.html",
+  "destaque": true
+}
